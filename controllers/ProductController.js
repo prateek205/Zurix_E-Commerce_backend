@@ -1,3 +1,4 @@
+import { useParams } from "react-router-dom";
 import Product from "../models/ProductMngmt.js";
 
 // ==================================
@@ -76,6 +77,104 @@ export const CreateProduct = async (req, res) => {
     // ********** check the error if above response is failed **********
 
     console.log("PRODUCT_DATA:", error);
+    res.status(500).json({ success: false, message: "Internal Server Error" });
+  }
+};
+
+export const getAllProducts = async (req, res) => {
+  try {
+    const { search, filter, maxPrice, minPrice, sort, colors, size } =
+      req.query;
+
+    const query = {};
+
+    if (search) {
+      query.name = {
+        $regex: search,
+        $regex: "i",
+      };
+    }
+
+    // if(category){
+    //   query.category = category
+    // }
+
+    if (colors) {
+      query.colors = colors;
+    }
+
+    if (size) {
+      query.size = size;
+    }
+
+    if ((minPrice, maxPrice)) {
+      query.price = {};
+
+      if (minPrice) {
+        query.price.$gte = Number(minPrice);
+      }
+
+      if (maxPrice) {
+        query.price.$lte = Number(maxPrice);
+      }
+    }
+
+    const sortOption = sort || "-createdAt";
+
+    const data = await Product.find(query).sort(sortOption);
+    res.status(200).json({
+      success: true,
+      message: "Fetch All Product Successfully",
+      count: data.length,
+      data,
+    });
+  } catch (error) {
+    console.log("GET_PRODUCTS:", error);
+    res.status(500).json({ success: false, message: "Internal Server Error" });
+  }
+};
+
+export const getProductById = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const data = await Product.findById(id);
+    res
+      .status(200)
+      .json({ success: true, message: "Product fetch successfully", data });
+  } catch (error) {
+    console.log("GET_PRODUCT_ID:", error);
+    res.status(500).json({ success: false, message: "Internal Server Error" });
+  }
+};
+
+export const updateProductById = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const data = await Product.findByIdAndUpdate(id, req.body, { new: true });
+
+    if (!data) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Product not found" });
+    }
+
+    res
+      .status(201)
+      .json({ success: true, message: "Product update successfully", data });
+  } catch (error) {
+    console.log("UPDATE_PRODUCT:", error);
+    res.status(500).json({ success: false, message: "Internal Server Error" });
+  }
+};
+
+export const deleteProductById = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const data = await Product.findByIdAndDelete(id);
+    res
+      .status(200)
+      .json({ success: true, message: "Product Deleted Successfully", data });
+  } catch (error) {
     res.status(500).json({ success: false, message: "Internal Server Error" });
   }
 };
