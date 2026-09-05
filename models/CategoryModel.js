@@ -5,9 +5,10 @@ const categoryModel = new mongoose.Schema(
     name: {
       type: String,
       trim: true,
+      required:true,
       unique: true,
     },
-    images: {
+    image: {
       type: String,
     },
   },
@@ -16,6 +17,6 @@ const categoryModel = new mongoose.Schema(
   },
 );
 
-const categories = mongoose.model("categories", categoryModel);
+const Category = mongoose.model("Category", categoryModel);
 
-export default categories;
+export default Category;

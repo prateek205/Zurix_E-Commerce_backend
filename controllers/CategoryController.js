@@ -1,28 +1,23 @@
-import categories from "../models/CategoryModel.js";
+import Category from "../models/CategoryModel.js";
 
 export const createCategory = async (req, res) => {
   try {
-    const { name, images } = req.body;
+    const { name, image } = req.body;
 
-    if (!name || !images) {
-      res
-        .status(404)
-        .json({ success: false, message: "All feilds are mandatory" });
+    if (!name || !image) {
+      return res
+        .status(400)
+        .json({ success: false, message: "All fields are mandatory" });
     }
 
-    const existCategory = await categories.findOne({ name });
+    const existCategory = await Category.findOne({ name });
     if (!existCategory) {
-      res
-        .status(404)
+      return res
+        .status(409)
         .json({ success: false, message: "Category Already Exists" });
     }
 
-    const category = {
-      name,
-      images,
-    };
-
-    const newCategory = new categories(category);
+    const newCategory = new Category({ name, image });
 
     await newCategory.save();
 
@@ -32,6 +27,7 @@ export const createCategory = async (req, res) => {
       newCategory,
     });
   } catch (error) {
+    console.log(error);
     res.status(500).json({ success: false, message: "Internal Server Error" });
   }
 };
