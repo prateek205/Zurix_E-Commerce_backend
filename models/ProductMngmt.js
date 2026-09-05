@@ -13,7 +13,6 @@ const ProductSchema = new mongoose.Schema({
   category: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Category",
-    required: true,
   },
   price: {
     type: Number,
@@ -22,6 +21,7 @@ const ProductSchema = new mongoose.Schema({
   },
   salePrice: {
     type: Number,
+    required:true,
     min: 0,
   },
   size: [
@@ -36,7 +36,7 @@ const ProductSchema = new mongoose.Schema({
   ],
   stock: {
     type: Number,
-    default: 5,
+    default: 10,
     min: 10,
   },
   isFeatured: {

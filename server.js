@@ -2,8 +2,9 @@ import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
 import { connectdb } from "./config/db.js";
-import AuthRoutes from "./routers/AuthRoute.js"
 import cookieParser from "cookie-parser";
+import AuthRoutes from "./routers/AuthRoute.js"
+import ProductRoute from "./routers/ProductRoute.js"
 
 dotenv.config();
 
@@ -25,6 +26,7 @@ app.use(cookieParser())
 // ===== ROUTES =====
 
 app.use("/api/v1/auth", AuthRoutes)
+app.use("/api/v1/products", ProductRoute)
 
 // ===== SERVER LISTENING PORT =====
 
